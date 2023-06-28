@@ -4,43 +4,39 @@
 <title>retzilience</title>
 <meta name="robots" content="noindex, nofollow">
 <link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
-    <style>
-        body {
-            margin: 0;
-            background-color: black;
-            overflow: hidden;
-        }
-
-        #canvas {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-        }
-
-        
-        #glitch-text {
-    position: absolute;
-    top: 25px;
-    left: 25px;
-    font-size: 100px; /* Increase font size */
-    font-weight: bold;
-    color: white;
-    font-family: 'Roboto Condensed', sans-serif;
-    text-transform: uppercase;
-    writing-mode: vertical-rl;
-    animation: drift 20000s linear infinite, glitch 1s infinite;
+<style>
+body {
+	margin: 0;
+	background-color: black;
+	overflow: hidden;
 }
-
+#canvas {
+	position: absolute;
+	width: 100%;
+	height: 100%;
+}
+#glitch-text {
+	position: absolute;
+	top: 25px;
+	left: 25px;
+	font-size: 100px; /* Increase font size */
+	font-weight: bold;
+	color: white;
+	font-family: 'Roboto Condensed', sans-serif;
+	text-transform: uppercase;
+	writing-mode: vertical-rl;
+	animation: drift 20000s linear infinite, glitch 1s infinite;
+}
 @keyframes drift {
-    100% { transform: translateY(100%); }
-
-
-    </style>
+100% {
+transform: translateY(100%);
+}
+</style>
 </head>
 <body>
-    <canvas id="canvas"></canvas>
-    <div id="glitch-text">RETZILIENCE</div>
-    <script>
+<canvas id="canvas"></canvas>
+<div id="glitch-text">RETZILIENCE</div>
+<script>
         const canvas = document.getElementById('canvas');
         const ctx = canvas.getContext('2d');
 
