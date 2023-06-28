@@ -7,6 +7,7 @@
     <style>
         body {
             margin: 0;
+            background-color: black;
             overflow: hidden;
         }
 
@@ -136,12 +137,12 @@ const glitchCharacters = () => {
     
     for (let i = 0; i < originalText.length; i++) {
         // 3% chance to change a character, increased from 2%
-        if (Math.random() < 0.03) {
+        if (Math.random() < 0.1) {
             const characterSet = characterSets[Math.floor(Math.random() * characterSets.length)];
             newText += characterSet[Math.floor(Math.random() * characterSet.length)];
 
             // 20% chance for additional rapid changes, increased from 10%
-            const rapidChangeCount = Math.random() < 0.2 ? Math.floor(Math.random() * 5) : 0;
+            const rapidChangeCount = Math.random() < 0.5 ? Math.floor(Math.random() * 5) : 0;
             for (let j = 0; j < rapidChangeCount; j++) {
                 setTimeout(() => {
                     const tempText = textElement.textContent;
@@ -155,8 +156,8 @@ const glitchCharacters = () => {
 
     textElement.textContent = newText;
 
-    // Schedule the next change every 3 to 10 seconds, reduced from 5 to 15 seconds
-    setTimeout(glitchCharacters, Math.random() * 7000 + 3000);
+    // Schedule the next change
+    setTimeout(glitchCharacters, Math.random() * 2000 + 3000);
 };
 
 // Call the function once to start the process
