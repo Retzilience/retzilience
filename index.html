@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="robots" content="noindex, nofollow">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'">
+  <meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin">
+<title>retzilience</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto+Condensed:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+        }
+
+        #canvas {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        
+        #glitch-text {
+    position: absolute;
+    top: 25px;
+    left: 25px;
+    font-size: 100px; /* Increase font size */
+    font-weight: bold;
+    color: white;
+    font-family: 'Roboto Condensed', sans-serif;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    animation: drift 20000s linear infinite, glitch 1s infinite;
+}
+
+@keyframes drift {
+    100% { transform: translateY(100%); }
+
+
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <div id="glitch-text">RETZILIENCE</div>
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Configuration parameters
+        let zoom = 150;
+        let offsetX = -0.6;
+        let offsetY = 0;
+        const maxIter = 1000;
+        
+        // Base Blorange color
+        const baseColor = [255, 103, 0]; // Blorange in RGB
+
+        // Mandelbrot function with logarithmic scale
+        const mandelbrot = (x, y) => {
+            let real = x;
+            let imag = y;
+            for (let n = 0; n < maxIter; n++) {
+                const real2 = real*real;
+                const imag2 = imag*imag;
+                if (real2 + imag2 > 4.0) {
+                    return Math.log(n + 1) / Math.log(maxIter);
+                }
+                imag = 2*real*imag + y;
+                real = real2 - imag2 + x;
+            }
+            return 0;
+        };
+
+        // Colorize function to map mandelbrot return value to a color
+        const colorize = (m) => {
+            // Generate color by adjusting brightness based on mandelbrot return value
+            return baseColor.map(c => Math.floor(c * m));
+        }
+
+        // Draw function to create the fractal image
+        const draw = () => {
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+            for (let y = 0; y < canvas.height; y++) {
+                for (let x = 0; x < canvas.width; x++) {
+                    const i = (x + y * canvas.width) * 4;
+                    const m = mandelbrot((x - canvas.width / 2) / zoom + offsetX, (y - canvas.height / 2) / zoom + offsetY);
+                    const color = colorize(m);
+                    data[i] = color[0];     // red
+                    data[i + 1] = color[1]; // green
+                    data[i + 2] = color[2]; // blue
+                    data[i + 3] = 255;       // alpha
+                }
+            }
+            ctx.putImageData(imageData, 0, 0);
+        };
+
+        // Update function to progressively zoom in
+        const update = () => {
+            offsetX -= 0.002;
+            zoom *= 1.01;
+            draw();
+            requestAnimationFrame(update);
+        };
+
+        // Resize function to handle window resizing
+        const resize = () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            draw();
+        };
+
+        // Event listener for window resize
+        window.addEventListener('resize', resize);
+        
+        // Initial actions
+        resize();
+        update();
+
+// Character sets to glitch into
+const characterSets = [
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZ', // English upper case
+    'abcdefghijklmnopqrstuvwxyz', // English lower case
+    '0123456789', // Numbers
+    ' !"#$%&\'()*+,-./:;<=>?@[\\]^_`{|}~', // ASCII punctuation
+    '¡¢£¤¥¦§¨©ª«¬®¯°±²³´µ¶·¸¹º»¼½¾¿ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿŒœŠšŸƒˆ˜–—‘’‚“”„†‡•…‰‹›€™', // Latin-1 Supplement
+    'あいうえおかきくけこさしすせそたちつてとなにぬねのはひふへほまみむめも', // Japanese Hiragana
+    'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモ'  // Japanese Katakana
+];
+
+// Character sets to glitch into
+// (The content of characterSets was here in your original code)
+
+// Randomly change characters in the text
+const glitchCharacters = () => {
+    const textElement = document.getElementById('glitch-text');
+    const originalText = textElement.textContent;
+    let newText = '';
+    
+    for (let i = 0; i < originalText.length; i++) {
+        // 3% chance to change a character, increased from 2%
+        if (Math.random() < 0.03) {
+            const characterSet = characterSets[Math.floor(Math.random() * characterSets.length)];
+            newText += characterSet[Math.floor(Math.random() * characterSet.length)];
+
+            // 20% chance for additional rapid changes, increased from 10%
+            const rapidChangeCount = Math.random() < 0.2 ? Math.floor(Math.random() * 5) : 0;
+            for (let j = 0; j < rapidChangeCount; j++) {
+                setTimeout(() => {
+                    const tempText = textElement.textContent;
+                    textElement.textContent = tempText.slice(0, i) + characterSet[Math.floor(Math.random() * characterSet.length)] + tempText.slice(i + 1);
+                }, j * 50); // Delay between rapid changes
+            }
+        } else {
+            newText += originalText[i];
+        }
+    }
+
+    textElement.textContent = newText;
+
+    // Schedule the next change every 3 to 10 seconds, reduced from 5 to 15 seconds
+    setTimeout(glitchCharacters, Math.random() * 7000 + 3000);
+};
+
+// Call the function once to start the process
+glitchCharacters();
+
+        
+        
+        
+    </script>
+</body>
+</html>
